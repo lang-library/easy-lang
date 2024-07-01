@@ -1,1 +1,1 @@
-# easy-lang
+# cs-easy-language
