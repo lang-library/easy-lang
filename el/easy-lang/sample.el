@@ -1,11 +1,11 @@
 ;;(load "~/.emacs.d/xprint.el")
 ;;(require 'eieio)
-(!class <rectangle> ()
+(class! <rectangle> ()
         (:width  1.0)
         (:height 1.0)
         :temp
         )
-(!method !area ((this <rectangle>))
+(method! !area ((this <rectangle>))
   (with-slots
       (width height)
       this
@@ -15,6 +15,7 @@
 (xdump (! rect :height))
 (xdump (! rect ^area))
 
-(! ary [elt 0 ! :width])
-(! ht [gethash :key])
-(! x [:prop ! elt 0 ! hashget "key" ! ^method-a a b c ! :prop2])
+(get! ary [elt 0] :width)
+(get! ht [gethash :key])
+(get! x :prop [elt 0] [hashget "key"] [^method-a a b c] :prop2)
+(put! $height x :prop ^set-height)
