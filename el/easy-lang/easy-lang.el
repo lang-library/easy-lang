@@ -11,12 +11,22 @@
 ;;(setq sxp (read (current-buffer)))
 ;;(xdump sxp)
 
-(defmacro class! ($class $super &rest $spec-list)
+(defun prop ($x $key)
+  (if (eieio-object-p $x)
+      (slot-value $x $key)
+    (gethash $key $x)))
+
+(gv-define-setter prop ($store $seq $n)
+  `(if (eieio-object-p ,$seq)
+      (set-slot-value ,$seq ,$n ,$store)
+    (puthash ,$n ,$store ,$seq)))
+
+(defmacro !class ($class $super &rest $spec-list)
   (if (not (listp $spec-list))
       (error "$spec list is not list")
     (let ( $spec-list2 )
       (dolist ($spec $spec-list)
-        (setq $spec-list2 (nconc $spec-list2 (list (class!::spec $spec))))
+        (setq $spec-list2 (nconc $spec-list2 (list (!class::spec $spec))))
         )
       (let (($form `(defclass ,$class ,$super ,$spec-list2)))
         ;;(xdump $form)
@@ -26,9 +36,9 @@
     )
   )
 
-(defun class!::spec ($spec)
-  (let* (($sym-name (class!::symbol-name $spec))
-         ($ini-form (class!::init-form $spec))
+(defun !class::spec ($spec)
+  (let* (($sym-name (!class::symbol-name $spec))
+         ($ini-form (!class::init-form $spec))
          )
     `( ,(intern $sym-name)
        :initarg ,(intern (concat ":" $sym-name))
@@ -36,7 +46,7 @@
     )
   )
 
-(defun class!::symbol-name ($spec)
+(defun !class::symbol-name ($spec)
   (let* (($sym $spec))
     (if (listp $sym)
         (setq $sym (nth 0 $sym)))
@@ -48,8 +58,8 @@
     )
   )
 
-(defun class!::init-form ($spec)
-  ;;(xprint "class!::init-form() called")
+(defun !class::init-form ($spec)
+  ;;(xprint "!class::init-form() called")
   (if (symbolp $spec)
       nil
     (nth 1 $spec)))
@@ -110,7 +120,7 @@
   (xpand (! x :width3))
   (xpand (! rect [^area]))
 
-  (class! <rectangle> ()
+  (!class <rectangle> ()
           width
           height)
   (cl-defmethod ^area ((this <rectangle>))
@@ -121,7 +131,7 @@
   (setq rect (make-instance <rectangle> :width 20 :height 10))
   (xpand-1 (setf (! rect [:x :y :width]) 777))
   (xpand-1 (setf (! rect [:width]) 777))
-  (setf (! rect [:width]) 777)
+  (setf (prop rect :width) 777)
   (setf (slot-value rect :height) 100)
   (xdump (! rect :width))
   (xdump (! rect [:height]))
@@ -129,7 +139,9 @@
   (xdump (! rect [^area]))
   (xdump (object-of-class-p rect <rectangle>))
   (xdump (eieio-object-p rect))
-  (xdump `(a b c ,@[d e]))
+  (setq h (make-hash-table :test #'equal))
+  (setf (prop h :abc) "abc")
+  (xdump (prop h :abc))
   )
 
 (ert-deftest pp-test-quote ()
