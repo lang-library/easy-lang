@@ -93,13 +93,16 @@
 
 (gv-define-setter ! ($store $seq $n)
   (setf $n (!::to-list $n))
-  (xdump $store)
-  (xdump $seq)
-  (xdump $n)
+  ;;(xdump $store)
+  ;;(xdump $seq)
+  ;;(xdump $n)
   (let* (($rev (reverse $n)))
-    (xdump $rev)
+    ;;(xdump $rev)
+    (setf $seq (macroexpand-1 `(! ,$seq ,(reverse (cdr $rev)))))
+    ;;(xdump $seq)
+    `(set-slot-value ,$seq ,(car $rev) ,$store)
     )
-  t)
+  )
 
 (progn
   (xclear)
@@ -116,7 +119,9 @@
         this
       (* width height)))
   (setq rect (make-instance <rectangle> :width 20 :height 10))
-  (xpand (setf (! rect [:x :y :witdh]) 777))
+  (xpand (setf (! rect [:x :y :width]) 777))
+  (xpand (setf (! rect [:width]) 777))
+  (setf (! rect [:width]) 777)
   (xdump (! rect :width))
   (xdump (! rect [:height]))
   (xdump (!area rect))
