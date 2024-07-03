@@ -21,8 +21,8 @@
       this
     (* width height)))
 (setq rect (make-instance <rectangle2> :width 30 :height 20))
-(xdump (slot-value rect 'width))
-(xdump (slot-value rect 'height))
+(xdump (slot-value rect :width))
+(xdump (slot-value rect :height))
 (xdump (!area rect))
 (set-slot-value rect :height 10)
 (xdump (!area rect))
