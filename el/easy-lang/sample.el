@@ -1,10 +1,10 @@
 ;;(load "~/.emacs.d/xprint.el")
 ;;(require 'eieio)
 (!class <rectangle> ()
-  ((:width  1.0)
-   (:height 1.0)
-   :temp)
-  )
+        (:width  1.0)
+        (:height 1.0)
+        :temp
+        )
 (!method !area ((this <rectangle>))
   (with-slots
       (width height)

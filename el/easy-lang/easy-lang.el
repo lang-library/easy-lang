@@ -1,4 +1,7 @@
+(provide 'easy-lang)
+
 (load "~/.emacs.d/xprint.el")
+
 (setq loop-count 5)
 (dotimes (i loop-count)
   (xdump (1+ i))
@@ -26,4 +29,37 @@
 (setq sxp (read (current-buffer)))
 (xdump sxp)
 
-(provide 'easy-lang)
+(defmacro !class ($class $super &rest $spec-list)
+  (xdump $class)
+  (xdump $super)
+  (xdump $spec-list)
+  (if (not (listp $spec-list))
+      (error "$spec list is not list")
+    (dolist ($spec $spec-list)
+      ;;(xdump $spec)
+      (xdump (!class::spec $spec))
+      )
+    )
+  nil
+  )
+
+(defun !class::spec ($spec)
+  (xdump $spec)
+  (if (symbolp $spec)
+      (let* (($sym-name (!class::symbol-name $spec)))
+        (xdump $sym-name)
+        )
+    )
+  nil
+  )
+
+(defun !class::symbol-name ($sym)
+  (xprint "!class::symbol-name() called")
+  (let* (($sym-name (symbol-name $sym)))
+    (if (string-match "^:" $sym-name)
+        (setf $sym-name (substring $sym-name 1)))
+    (xdump $sym-name 1)
+    )
+  "abc"
+  )
+
