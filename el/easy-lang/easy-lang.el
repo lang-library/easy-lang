@@ -62,7 +62,7 @@
         (($i 0 (1+ $i)))
         ((>= $i (length $slots)) $exp)
       (let (($slot (elt $slots $i)))
-        (if (not (string-match "^!" (symbol-name $slot)))
+        (if (not (string-match "^\\^" (symbol-name $slot)))
             (setf $exp `(slot-value ,$exp ,$slot))
             (let (($args (nthcdr (1+ $i) $slots)))
               (xdump $args)
@@ -113,7 +113,7 @@
   (class! <rectangle> ()
           width
           height)
-  (cl-defmethod !area ((this <rectangle>))
+  (cl-defmethod ^area ((this <rectangle>))
     (with-slots
         (width height)
         this
@@ -122,10 +122,11 @@
   (xpand (setf (! rect [:x :y :width]) 777))
   (xpand (setf (! rect [:width]) 777))
   (setf (! rect [:width]) 777)
+  (setf (slot-value rect :height) 100)
   (xdump (! rect :width))
   (xdump (! rect [:height]))
   (xdump (!area rect))
-  (xdump (! rect [!area]))
+  (xdump (! rect [^area]))
   (xdump (object-of-class-p rect <rectangle>))
   (xdump (eieio-object-p rect))
   )

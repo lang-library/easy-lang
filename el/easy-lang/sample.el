@@ -11,9 +11,10 @@
       this
     (return (* width height))))
 (setq rect (!new <rectangle> :width 20 :height 10))
-(xdump [! rect :width])
-(xdump [! rect :height])
-(xdump [! rect !area])
+(xdump (! rect :width))
+(xdump (! rect :height))
+(xdump (! rect ^area))
 
-[! ary [0]]
-[! ht [:key]]
+(! ary [elt 0 ! :width])
+(! ht [gethash :key])
+(! x [:prop ! elt 0 ! hashget "key" ! ^method-a a b c ! :prop2])
