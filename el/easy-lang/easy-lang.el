@@ -45,21 +45,31 @@
 
 (defun !class::spec ($spec)
   (xdump $spec)
-  (if (symbolp $spec)
-      (let* (($sym-name (!class::symbol-name $spec)))
-        (xdump $sym-name)
-        )
+  (let* (($sym-name (!class::symbol-name $spec))
+         ($ini-form (!class::init-form $spec))
+         )
+    (xdump $sym-name)
+    (xdump $ini-form)
     )
   nil
   )
 
-(defun !class::symbol-name ($sym)
+(defun !class::symbol-name ($spec)
   (xprint "!class::symbol-name() called")
-  (let* (($sym-name (symbol-name $sym)))
-    (if (string-match "^:" $sym-name)
-        (setf $sym-name (substring $sym-name 1)))
-    (xdump $sym-name 1)
+  (let* (($sym $spec))
+    (if (listp $sym)
+        (setq $sym (nth 0 $sym)))
+    (let* (($sym-name (symbol-name $sym)))
+      (if (string-match "^:" $sym-name)
+          (setf $sym-name (substring $sym-name 1)))
+      (xdump $sym-name 1)
+      $sym-name
+      )
     )
-  "abc"
   )
 
+(defun !class::init-form ($spec)
+  (xprint "!class::init-form() called")
+  (if (symbolp $spec)
+      nil
+    (nth 1 $spec)))
