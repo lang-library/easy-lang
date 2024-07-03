@@ -1,5 +1,5 @@
-(load "~/.emacs.d/xprint.el")
-(require 'eieio)
+;;(load "~/.emacs.d/xprint.el")
+;;(require 'eieio)
 (!class <rectangle> ()
   ((:width  1.0)
    (:height 1.0)
