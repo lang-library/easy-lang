@@ -126,4 +126,6 @@
   (xdump (! rect [:height]))
   (xdump (!area rect))
   (xdump (! rect [!area]))
+  (xdump (object-of-class-p rect <rectangle>))
+  (xdump (eieio-object-p rect))
   )
