@@ -108,7 +108,7 @@
   (xclear)
   (xpand (! x [:width2]))
   (xpand (! x :width3))
-  (xpand (! rect [!area]))
+  (xpand (! rect [^area]))
 
   (class! <rectangle> ()
           width
@@ -119,13 +119,13 @@
         this
       (* width height)))
   (setq rect (make-instance <rectangle> :width 20 :height 10))
-  (xpand (setf (! rect [:x :y :width]) 777))
-  (xpand (setf (! rect [:width]) 777))
+  (xpand-1 (setf (! rect [:x :y :width]) 777))
+  (xpand-1 (setf (! rect [:width]) 777))
   (setf (! rect [:width]) 777)
   (setf (slot-value rect :height) 100)
   (xdump (! rect :width))
   (xdump (! rect [:height]))
-  (xdump (!area rect))
+  (xdump (^area rect))
   (xdump (! rect [^area]))
   (xdump (object-of-class-p rect <rectangle>))
   (xdump (eieio-object-p rect))
@@ -146,4 +146,4 @@
 
 (xdump (ert-test-passed-p (ert-run-test (ert-get-test 'my-test-01))))
 
-(ert t)
+;;(ert t)
