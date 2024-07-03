@@ -8,9 +8,19 @@
   (xdump command-line-args-left)
   )
 
-(xpand
- (!class <rectangle> ()
-         (:width  1.0)
-         (:height 1.0)
-         :temp
-         ))
+
+(!class <rectangle2> ()
+        (:width  1.0)
+        (height 1.0)
+        :temp
+        )
+
+(cl-defmethod !area ((this <rectangle2>))
+  (with-slots
+      (width height)
+      this
+    (* width height)))
+(setq rect (make-instance <rectangle2> :width 30 :height 20))
+(xdump (slot-value rect 'width))
+(xdump (slot-value rect 'height))
+(xdump (!area rect))

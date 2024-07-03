@@ -18,7 +18,7 @@
 (defun easy-lang-main ()
   (xprint "easy-lang-main")
   )
-  
+
 (easy-lang-main)
 
 (xdump command-line-args)
@@ -35,12 +35,18 @@
   (xdump $spec-list)
   (if (not (listp $spec-list))
       (error "$spec list is not list")
-    (dolist ($spec $spec-list)
-      ;;(xdump $spec)
-      (xdump (!class::spec $spec))
+    (let ( $spec-list2 )
+      (dolist ($spec $spec-list)
+        ;;(xdump $spec)
+        (xdump (!class::spec $spec))
+        (setq $spec-list2 (nconc $spec-list2 (list (!class::spec $spec))))
+        )
+      (let (($form `(defclass ,$class ,$super ,$spec-list2)))
+        (xdump $form)
+        $form
+        )
       )
     )
-  nil
   )
 
 (defun !class::spec ($spec)
@@ -50,8 +56,10 @@
          )
     (xdump $sym-name)
     (xdump $ini-form)
+    `( ,(intern $sym-name)
+       :initarg ,(intern (concat ":" $sym-name))
+       :initform ,$ini-form )
     )
-  nil
   )
 
 (defun !class::symbol-name ($spec)
