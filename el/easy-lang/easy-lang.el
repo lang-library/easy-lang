@@ -91,9 +91,18 @@
    )
   )
 
+(gv-define-setter ! ($store $seq $n)
+  (setf $n (!::to-list $n))
+  (xdump $store)
+  (xdump $seq)
+  (xdump $n)
+  (let* (($rev (reverse $n)))
+    (xdump $rev)
+    )
+  t)
+
 (progn
   (xclear)
-  (xpand (! x (:width1)))
   (xpand (! x [:width2]))
   (xpand (! x :width3))
   (xpand (! rect [!area]))
@@ -107,6 +116,7 @@
         this
       (* width height)))
   (setq rect (make-instance <rectangle> :width 20 :height 10))
+  (xpand (setf (! rect [:x :y :witdh]) 777))
   (xdump (! rect :width))
   (xdump (! rect [:height]))
   (xdump (!area rect))
