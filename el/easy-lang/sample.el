@@ -15,7 +15,10 @@
 (xdump (! rect :height))
 (xdump (! rect ^area))
 
-(!get ary (elt ! 0) :width)
-(!get ht (gethash ! :key))
-(!get x :prop (elt ! 0) (hashget ! "key") (^method-a a ! c) :prop2)
+(!get ary (prop ! $idx) :width)
+(!get ary $idx :width)
+(!get ary (length !))
+(!get ht (prop ! :key))
+(!get ht :key)
+(!get x :prop 0 "key" (^method-a a ! c) :prop2)
 (!put $height x :prop (elt ! 0) ^set-height)

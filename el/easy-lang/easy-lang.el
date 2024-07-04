@@ -11,7 +11,7 @@
 ;;(setq sxp (read (current-buffer)))
 ;;(xdump sxp)
 
-(defun prop ($x $key)
+(defun getprop ($x $key)
   (cond
    ((eieio-object-p $x)
     (slot-value $x $key))
@@ -19,13 +19,16 @@
     (gethash $key $x))
    (t (elt $x $key))))
 
-(gv-define-setter prop ($store $seq $n)
-  `(cond
-    ((eieio-object-p ,$seq)
-     (set-slot-value ,$seq ,$n ,$store))
-    ((hash-table-p ,$seq)
-     (puthash ,$n ,$store ,$seq))
-    (t (setf (elt ,$seq ,$n) ,$store))))
+(defun putprop ($x $key $store)
+  (cond
+   ((eieio-object-p $x)
+    (set-slot-value $x $key $store))
+   ((hash-table-p $x)
+    (puthash $key $store $x))
+   (t (setf (elt $x $key) $store))))
+
+(gv-define-setter getprop ($store $seq $n)
+  `(putprop ,$seq ,$n ,$store))
 
 (defmacro !class ($class $super &rest $spec-list)
   (if (not (listp $spec-list))
@@ -137,7 +140,7 @@
   (setq rect (make-instance <rectangle> :width 20 :height 10))
   (xpand-1 (setf (! rect [:x :y :width]) 777))
   (xpand-1 (setf (! rect [:width]) 777))
-  (setf (prop rect :width) 777)
+  (setf (getprop rect :width) 777)
   (setf (slot-value rect :height) 100)
   (xdump (! rect :width))
   (xdump (! rect [:height]))
@@ -146,13 +149,17 @@
   (xdump (object-of-class-p rect <rectangle>))
   (xdump (eieio-object-p rect))
   (setq h (make-hash-table :test #'equal))
-  (setf (prop h :abc) "abc")
-  (xdump (prop h :abc))
+  (setf (getprop h :abc) "abc")
+  (xdump (getprop h :abc))
   (setf ary [111 222 333])
   (xdump ary)
-  (xdump (prop ary 1))
-  (setf (prop ary 1) 777)
+  (xdump (getprop ary 1))
+  (setf (getprop ary 1) 777)
   (xdump ary)
+  (xdump-json ary)
+  (xdump-json nil)
+  (xdump-json h)
+  (xdump-json (list "a" "b" "c"))
   )
 
 (ert-deftest pp-test-quote ()
