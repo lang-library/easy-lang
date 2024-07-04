@@ -23,6 +23,8 @@
         (width height)
         this
       (* width height)))
+  (!method ^area2 ((this <rectangle>))
+    (* (:width this) (:height this)))
   (setq rect (make-instance <rectangle> :width 20 :height 10))
   (xdump (! rect ^area))
   (should (equal (! rect ^area) 200))
@@ -35,6 +37,8 @@
   (should (equal (! rect :height) 20))
   (xdump (! rect ^area))
   (should (equal (! rect ^area) 15540))
+  (xdump (! rect ^area2))
+  (should (equal (! rect ^area2) 15540))
   (xdump (object-of-class-p rect <rectangle>))
   (xdump (eieio-object-p rect))
   (setq h (make-hash-table :test #'equal))
