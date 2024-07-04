@@ -15,7 +15,8 @@
           width
           height)
   (!method ^setHeight ((this <rectangle>) $height)
-    (putprop this :height $height)
+    ;;(putprop this :height $height)
+    (setf (:height this) $height)
     )
   (!method ^area ((this <rectangle>))
     (with-slots
@@ -28,8 +29,8 @@
   (setf (getprop rect :width) 777)
   ;;(! rect (putprop ! :height 20))
   (! rect (^setHeight ! 20))
-  (xdump (! rect :width))
-  (should (equal (! rect :width) 777))
+  (xdump (:width rect))
+  (should (equal (:width rect) 777))
   (xdump (! rect :height))
   (should (equal (! rect :height) 20))
   (xdump (! rect ^area))
