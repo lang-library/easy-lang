@@ -3,17 +3,20 @@
 (load "~/.emacs.d/xprint.el")
 (load "~/.emacs.d/oop.el")
 (load "~/.emacs.d/getprop")
-;;(require 'eieio)
 (require 'ert)
 
 (xdump command-line-args)
 (xdump command-line-args-left)
 
-(ert-deftest my-test-00 ()
+;;(ert-deftest my-test-00 ()
+(!program
   ;;(xclear)
   (!class <rectangle> ()
           width
           height)
+  (!method ^setHeight ((this <rectangle>) $height)
+    (putprop this :height $height)
+    )
   (!method ^area ((this <rectangle>))
     (with-slots
         (width height)
@@ -23,7 +26,8 @@
   (xdump (! rect ^area))
   (should (equal (! rect ^area) 200))
   (setf (getprop rect :width) 777)
-  (! rect (putprop ! :height 20))
+  ;;(! rect (putprop ! :height 20))
+  (! rect (^setHeight ! 20))
   (xdump (! rect :width))
   (should (equal (! rect :width) 777))
   (xdump (! rect :height))
@@ -52,6 +56,8 @@
   (xpand-1 (! x :width (elt ! 0) ^method-1 (^method-2 a ! b)))
   )
 
+;;(should (equal (+ 11 22) 34))
+
 ;;(ert-delete-all-tests)
 
 (ert-deftest my-test-01 ()
@@ -60,4 +66,4 @@
 
 ;;(xdump (ert-test-passed-p (ert-run-test (ert-get-test 'my-test-01))))
 
-(ert t)
+;;(ert t)
