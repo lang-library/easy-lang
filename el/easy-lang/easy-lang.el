@@ -30,6 +30,47 @@
 (gv-define-setter getprop ($store $seq $n)
   `(putprop ,$seq ,$n ,$store))
 
+(defmacro !get ($x &rest $specs)
+  (setf $specs (!get::specs $specs))
+  (dolist ($spec $specs)
+    (setf $x (!get::replace $spec $x))
+    )
+  $x
+  )
+
+(defun !get::replace ($spec $x)
+  (let ( $result )
+    (dolist ($e $spec (nreverse $result))
+      (if (eq $e '!)
+          (push $x $result)
+        (push $e $result)
+        )
+      )
+    )
+  )
+
+(defun !get::specs ($specs)
+  (let* ( $result )
+    (dolist ($spec $specs (nreverse $result))
+      ;;(xdump $spec 1)
+      (setf $spec (!get::spec $spec))
+      ;;(xdump $spec 2)
+      (push $spec $result)
+      )
+    )
+  )
+
+(defun !get::spec ($spec)
+  (cond
+   ((and (listp $spec) (memq '! $spec))
+    $spec)
+   ((and (symbolp $spec) (string-match "^\\^" (symbol-name $spec)))
+    `(,$spec !))
+   (t
+    `(slot-value ! ,$spec))
+   )
+  )
+
 (defmacro !class ($class $super &rest $spec-list)
   (if (not (listp $spec-list))
       (error "$spec list is not list")
@@ -160,6 +201,7 @@
   (xdump-json nil)
   (xdump-json h)
   (xdump-json (list "a" "b" "c"))
+  (xpand-1 (!get x :width (elt ! 0) ^method-1 (^method-2 a ! b)))
   )
 
 (ert-deftest pp-test-quote ()
