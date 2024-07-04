@@ -12,14 +12,20 @@
 ;;(xdump sxp)
 
 (defun prop ($x $key)
-  (if (eieio-object-p $x)
-      (slot-value $x $key)
-    (gethash $key $x)))
+  (cond
+   ((eieio-object-p $x)
+    (slot-value $x $key))
+   ((hash-table-p $x)
+    (gethash $key $x))
+   (t (elt $x $key))))
 
 (gv-define-setter prop ($store $seq $n)
-  `(if (eieio-object-p ,$seq)
-      (set-slot-value ,$seq ,$n ,$store)
-    (puthash ,$n ,$store ,$seq)))
+  `(cond
+    ((eieio-object-p ,$seq)
+     (set-slot-value ,$seq ,$n ,$store))
+    ((hash-table-p ,$seq)
+     (puthash ,$n ,$store ,$seq))
+    (t (setf (elt ,$seq ,$n) ,$store))))
 
 (defmacro !class ($class $super &rest $spec-list)
   (if (not (listp $spec-list))
@@ -142,6 +148,11 @@
   (setq h (make-hash-table :test #'equal))
   (setf (prop h :abc) "abc")
   (xdump (prop h :abc))
+  (setf ary [111 222 333])
+  (xdump ary)
+  (xdump (prop ary 1))
+  (setf (prop ary 1) 777)
+  (xdump ary)
   )
 
 (ert-deftest pp-test-quote ()
