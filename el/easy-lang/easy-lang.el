@@ -11,6 +11,10 @@
 ;;(ert-deftest my-test-00 ()
 (!program
   ;;(xclear)
+  (xpand-1
+   (!class <rectangle> ()
+           width
+           height))
   (!class <rectangle> ()
           width
           height)
